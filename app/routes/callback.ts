@@ -19,6 +19,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   mockDb.state = null;
 
+  // Create headers using integration key and secret key
   const headers = new Headers({
     Authorization: `Basic ${Buffer.from(
       `${process.env.DOCUSIGN_INTEGRATION_KEY!}:${process.env
@@ -28,14 +29,17 @@ export async function loader({ request }: Route.LoaderArgs) {
   });
 
   // Exchange code for access token
-  const response = await fetch(process.env.DOCUSIGN_TOKEN_URL!, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      code,
-      grant_type: "authorization_code",
-    }),
-  });
+  const response = await fetch(
+    `${process.env.DOCUSIGN_AUTH_URL!}/oauth/token`,
+    {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        code,
+        grant_type: "authorization_code",
+      }),
+    }
+  );
 
   if (response.status !== 200) {
     console.error(await response.json());
@@ -43,7 +47,9 @@ export async function loader({ request }: Route.LoaderArgs) {
     throw new Error("Failed to exchange code for access token");
   }
 
+  // Save token to mockDb
   mockDb.token = await response.json();
 
+  // Redirect to document page
   return redirect("/document");
 }

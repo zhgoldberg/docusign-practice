@@ -6,18 +6,23 @@ import crypto from "crypto";
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
 
+  // Save company name to mockDb
   mockDb.company = formData.get("company") as string;
 
+  // Generate state for CSRF protection
   mockDb.state = crypto.randomBytes(16).toString("hex");
 
-  const url = new URL(process.env.DOCUSIGN_BASE_URL!);
+  // Create URL
+  const url = new URL(`${process.env.DOCUSIGN_AUTH_URL!}/oauth/auth`);
 
+  // Add query parameters
   url.searchParams.set("response_type", "code");
   url.searchParams.set("scope", "signature");
   url.searchParams.set("client_id", process.env.DOCUSIGN_INTEGRATION_KEY!);
   url.searchParams.set("state", mockDb.state);
   url.searchParams.set("redirect_uri", process.env.DOCUSIGN_REDIRECT_URL!);
 
+  // Redirect to DocuSign
   return redirect(url.toString());
 }
 

@@ -8,8 +8,18 @@ export const mockDb: {
     expires_in: number;
     scope: "signature";
   } | null;
+  user: {
+    email: string;
+    name: string;
+    id: string;
+  };
 } = {
   company: "",
   state: null,
   token: null,
+  user: {
+    email: "zachary.goldberg@meetnirvana.com",
+    name: "Zachary Goldberg",
+    id: "zhg123",
+  },
 };
