@@ -6,11 +6,21 @@ export const makeEnvelope = () => {
   let signer1 = docusign.Signer.constructFromObject({
     email: mockDb.user.email,
     name: mockDb.user.name,
-    roleName: "signer",
+    roleName: "signer", // This value should correspond to the role name created on the template
     recipientId: "1",
     // Adding clientUserId transforms the template recipient
     // into an embedded recipient:
     clientUserId: mockDb.user.id,
+
+    // To prefill the field
+    tabs: {
+      textTabs: [
+        {
+          tabLabel: "Company",
+          value: mockDb.company,
+        },
+      ],
+    },
   });
   // Recipients object:
   let recipientsServerTemplate = docusign.Recipients.constructFromObject({
