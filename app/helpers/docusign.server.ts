@@ -83,9 +83,9 @@ export function makeRecipientViewRequest() {
   // parameter. It causes the DocuSign signing web page
   // (not the DocuSign server) to send pings via AJAX to your
   // app,
-  //   viewRequest.pingFrequency = 600; // seconds
+  viewRequest.pingFrequency = 60; // seconds
   // NOTE: The pings will only be sent if the pingUrl is an https address
-  //   viewRequest.pingUrl = args.dsPingUrl; // optional setting
+  viewRequest.pingUrl = `${process.env.APP_URL!}/ping`; // optional setting
   viewRequest.frameAncestors = [
     process.env.APP_URL!,
     process.env.DOCUSIGN_BASE_URL!,
